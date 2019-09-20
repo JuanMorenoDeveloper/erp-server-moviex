@@ -1,4 +1,4 @@
-package uy.edu.ude.moviex.entity
+package uy.edu.ude.entity
 
 import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.validator.constraints.URL
@@ -41,8 +41,8 @@ class Pelicula {
 
   constructor(id: Long, @NotNull titulo: String,
               @NotNull director: String,
-              @Email @NotNull fechaEstreno: LocalDate, @NotNull direccion: String,
-              genero: Genero, poster: String) {
+              @Email @NotNull fechaEstreno: LocalDate, genero: Genero,
+              poster: String) {
     this.id = id
     this.titulo = titulo
     this.director = director
@@ -51,15 +51,15 @@ class Pelicula {
     this.poster = poster
   }
 
-  override fun equals(o: Any?): Boolean {
-    if (this === o) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (o !is Pelicula) {
+    if (other !is Pelicula) {
       return false
     }
-    val pelicula = o as Pelicula?
-    return id != null && id == pelicula!!.id
+    val pelicula = other as Pelicula?
+    return id == pelicula!!.id
   }
 
   override fun hashCode(): Int {

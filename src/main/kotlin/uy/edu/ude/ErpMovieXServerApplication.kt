@@ -1,12 +1,12 @@
-package uy.edu.ude.moviex
+package uy.edu.ude
 
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
 @SpringBootApplication
 class ErpMovieXServerApplication
 
 fun main(args: Array<String>) {
-  SpringApplication.run(ErpMovieXServerApplication::class.java, *args)
+  runApplication<ErpMovieXServerApplication>(*args)
 }
 

@@ -1,12 +1,12 @@
-package uy.edu.ude.moviex.repository
+package uy.edu.ude.repository
 
 import java.time.LocalDate
 import java.util.Optional
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
-import uy.edu.ude.moviex.entity.Genero
-import uy.edu.ude.moviex.entity.Pelicula
+import uy.edu.ude.entity.Genero
+import uy.edu.ude.entity.Pelicula
 
 @RepositoryRestResource(collectionResourceRel = "pelicula", path = "pelicula")
 interface PeliculaRepository : CrudRepository<Pelicula, Long> {

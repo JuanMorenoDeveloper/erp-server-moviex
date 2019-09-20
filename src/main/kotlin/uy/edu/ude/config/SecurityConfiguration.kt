@@ -1,4 +1,4 @@
-package uy.edu.ude.moviex.config
+package uy.edu.ude.config
 
 import org.springframework.http.HttpMethod.DELETE
 import org.springframework.http.HttpMethod.GET

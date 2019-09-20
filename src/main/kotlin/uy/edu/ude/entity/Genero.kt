@@ -1,4 +1,4 @@
-package uy.edu.ude.moviex.entity
+package uy.edu.ude.entity
 
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.Entity
@@ -29,14 +29,14 @@ class Genero {
   }
 
 
-  override fun equals(o: Any?): Boolean {
-    if (this === o) {
+  override fun equals(other: Any?): Boolean {
+    if (this === other) {
       return true
     }
-    if (o !is Genero) {
+    if (other !is Genero) {
       return false
     }
-    val genero = o as Genero?
+    val genero = other as Genero?
     return id != null && id == genero!!.id
   }
 

@@ -1,4 +1,4 @@
-package uy.edu.ude.moviex.service
+package uy.edu.ude.service
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.User
