@@ -64,6 +64,7 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
         .denyAll()
         .antMatchers("/h2-console/**").permitAll()
         .antMatchers("/browser/**").permitAll()
+        .antMatchers("/v2/api-docs/**").permitAll()
     httpSecurity.httpBasic()
     httpSecurity.csrf().disable()
     httpSecurity.headers().frameOptions().disable()
