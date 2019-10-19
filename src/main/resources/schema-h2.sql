@@ -10,8 +10,7 @@ create table pelicula (
   fecha_estreno   date not null,
   poster          varchar(255) not null,
   genero_id       bigint,
-  primary key (id),
-  unique key(poster)
+  primary key (id)
 );
 create table rol (
   id          bigint       not null,

@@ -1,12 +1,11 @@
 package uy.edu.ude.entity
 
 import org.hibernate.annotations.DynamicUpdate
-import org.hibernate.validator.constraints.URL
 import java.time.LocalDate
 import javax.persistence.*
-import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
 @Entity
@@ -19,18 +18,17 @@ class Pelicula {
   @NotBlank
   @NotNull
   @Size(max = 256)
-  var titulo: String = ""
+  var titulo: String? = ""
   @Size(max = 256)
   @NotNull
   @NotBlank
-  var director: String = ""
+  var director: String? = ""
+  @NotNull
+  var fechaEstreno: LocalDate? = LocalDate.now()
   @NotNull
   @Size(max = 256)
-  var fechaEstreno: LocalDate = LocalDate.now()
-  @NotNull
-  @Size(max = 256)
-  @URL(regexp = "^(http|https)")
-  var poster: String = ""
+  @Pattern(regexp = "^(http|https).*")
+  var poster: String? = ""
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "genero_id")
@@ -41,7 +39,7 @@ class Pelicula {
 
   constructor(id: Long, @NotNull titulo: String,
               @NotNull director: String,
-              @Email @NotNull fechaEstreno: LocalDate, genero: Genero,
+              @NotNull fechaEstreno: LocalDate, genero: Genero,
               poster: String) {
     this.id = id
     this.titulo = titulo

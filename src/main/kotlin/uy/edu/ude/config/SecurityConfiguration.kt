@@ -1,13 +1,8 @@
 package uy.edu.ude.config
 
-import org.springframework.http.HttpMethod.DELETE
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.PATCH
-import org.springframework.http.HttpMethod.POST
-import org.springframework.http.HttpMethod.PUT
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
+import org.springframework.http.HttpMethod.*
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -53,8 +48,6 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
         .antMatchers(PUT, "/pelicula/**")
         .hasRole(ROLE_ADMIN)
         .antMatchers(DELETE, "/pelicula/**")
-        .hasRole(ROLE_ADMIN)
-        .antMatchers(PATCH, "/pelicula/**")
         .hasRole(ROLE_ADMIN)
         .antMatchers(GET, "/pelicula/**")
         .hasRole(ROLE_ADMIN)
