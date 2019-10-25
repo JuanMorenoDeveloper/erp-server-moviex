@@ -248,7 +248,9 @@ Figura 1. Captura de Hal Browser
 *JDBC URL*: jdbc:h2:mem:classdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE  
 *User Name*: sa   
 *Password*:   
+
 ![](H2ConsoleLogin.png)
 Figura 2. Login H2 Console
+
 ![](H2ConsoleManager.png)
 Figura 3. Manager H2 Console
