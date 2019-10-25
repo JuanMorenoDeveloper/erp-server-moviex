@@ -4,211 +4,222 @@ Servidor de apoyo para Obligatorio 2019 de la asignatura "Programación de Aps. 
 **Carrera**: Analista en Informática / Universidad de la Empresa. 
 
 ## Ejecución  (Requiere java 8)
-El jar generado en la compilación queda con el nombre "class-server-0.0.1-SNAPSHOT.jar" en la ruta target/. Su ejecución se hace con:   
-`$ java -jar class-server-0.0.1-SNAPSHOT.jar --server.port=XXXX`   
-Donde la opción *server.port* es opcional y se puede usar para especificar el puerto de publicación de la aplicación. El puerto por default es 8080.
+El jar generado en la compilación queda con el nombre "erp-server-moviex-0.0.1-SNAPSHOT.jar" en la ruta target/. Su ejecución se hace con:   
+`$ java -jar erp-server-moviex-0.0.1-SNAPSHOT.jar --server.port=XXXX`   
+El puerto por default es 8080. Si se desea cambiar se puede usar la opción *--server.port=XXXX* para especificar el puerto de publicación de la aplicación. 
 
 ## Recursos disponibles
-**Clientes**:   
-*URL*: http://localhost:8080/estudiante/   
-**Departamentos**:   
-*URL*: http://localhost:8080/departamento/
+**Películas**:   
+*URL*: http://localhost:8080/pelicula/   
+**Géneros**:   
+*URL*: http://localhost:8080/genero/
 **Usuario**:   
 *URL*: http://localhost:8080/usuario/
 
-
 ## Usuarios y roles
-Se tienen dos roles "**estudiante**" y "**profesor**" con usuarios pre cargados.      
+Se tienen dos roles "**ROLE_ADMIN**" y "**ROLE_USER**" con usuarios pre cargados.      
 ___
-Con rol "**estudiante**":    
+Con rol "**ROLE_USER**":    
 
-*Usuario*: estudiante   
-*Contraseña*: estudiante   
+*Usuario*: user
+*Contraseña*: user
 
-*Usuario*: est   
-*Contaseña*: est   
+*Usuario*: usr
+*Contaseña*: usr
 ___    
-Con rol "**profesor**":   
+Con rol "**ROLE_ADMIN**":   
     
-*Usuario*: profesor   
-*Constraseña*: profesor
+*Usuario*: admin
+*Constraseña*: admin
    
-*Usuario*: prof   
-*Contraseña*: prof       
+*Usuario*: adm
+*Contraseña*: adm
 
 ## Seguridad y recursos
 El acceso a los recursos está protegido por autenticación HTTP Basic. Las URL y métodos permitidos por rol se describen a continuación:
 
-*URL*: /estudiante/**   
-*Métodos HTTP permitidos*: POST(profesor), DELETE(profesor), PUT(profesor), PATCH(profesor), GET(profesor, estudiante)
+*URL*: /pelicula/**   
+*Métodos HTTP permitidos*: POST(ROLE_ADMIN), DELETE(ROLE_ADMIN), PUT(ROLE_ADMIN), GET(ROLE_ADMIN, ROLE_USER)
 
-*URL*: /profesor/**   
-*Métodos HTTP permitidos*: POST(profesor), DELETE(profesor), PUT(profesor), PATCH(profesor), PUT(profesor) 
-
-*URL*: /departamento/**   
-*Métodos HTTP permitidos*: GET(profesor, estudiante)
+*URL*: /genero/**   
+*Métodos HTTP permitidos*: GET(ROLE_ADMIN, ROLE_USER)
 
 *URL*: /usuario/**   
-*Métodos HTTP permitidos*: GET(profesor, estudiante)   
+*Métodos HTTP permitidos*: GET(ROLE_ADMIN, ROLE_USER)  
 
 ## Tipos de peticiones soportadas
 ### GET (Select de registro)
-*Ejemplo de petición con usuario estudiante*:
+*Ejemplo de petición con rol ROLE_ADMIN*:
 
-```
-curl -X GET \
-  http://localhost:8080/estudiante/1 \
-  -H 'authorization: Basic ZXN0dWRpYW50ZTplc3R1ZGlhbnRl'  
+```kotlin
+  @Test
+  @Throws(IOException::class)
+  fun givenAuthUser_whenGetUsuario_thenGetResponseOk() {
+    val client = OkHttpClient()
+    val request = Request.Builder()
+        .url("http://localhost:8080/usuario")
+        .header("Authorization", Credentials.basic("adm", "adm"))
+        .build()
+    val rolExpected = "ROLE_ADMIN"
+
+    val response = client.newCall(request).execute()
+
+    assertSoftly {
+      it.assertThat(response.code).isEqualTo(200)
+      it.assertThat(response.body!!.string()).contains(rolExpected)
+    }
+    response.close()
+  }
 ```
 *Respuesta*:   
 Código HTTP: **200** OK   
 Body (Objeto consultado):  
 
-```
+```json
 {
-  "nombre" : "Adan D.",
-  "telefono" : "092123123",
-  "email" : "estudiante@class.com",
-  "direccion" : "Cerro Largo",
-  "_links" : {
-    "self" : {
-      "href" : "http://localhost:8080/estudiante/1"
-    },
-    "estudiante" : {
-      "href" : "http://localhost:8080/estudiante/1"
-    },
-    "departamento" : {
-      "href" : "http://localhost:8080/estudiante/1/departamento"
+  "password": null,
+  "username": "admin",
+  "authorities": [
+    {
+      "authority": "ROLE_ADMIN"
     }
-  }
+  ],
+  "accountNonExpired": true,
+  "accountNonLocked": true,
+  "credentialsNonExpired": true,
+  "enabled": true
 }
 ```
 
 ### POST (Insert de registro)
-*Ejemplo de petición con usuario profesor*:   
+*Ejemplo de petición con rol ROLE_ADMIN*:   
 
-```
-curl -X POST \
-  http://localhost:8080/estudiante \
-  -H 'authorization: Basic cHJvZmVzb3I6cHJvZmVzb3I=' \
-  -H 'content-type: application/json' \
-  -d '{
-    "nombre": "Carlos3000",
-    "telefono": "092651651",
-    "email": "carlos2@test.com",
-    "direccion": "Mi Casa",
-    "departamento":"http://localhost:8080/departamento/3"
-}'
+```kotlin
+  @Test
+  @Throws(IOException::class)
+  fun givenAdmin_whenPostPelicula_thenGetResponse201() {
+    val client = OkHttpClient()
+    val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+    val json = """
+      {"director": "Carlos3000",
+      "titulo": "Test 123",
+      "fecha_estreno": "2019-12-12",
+      "poster": "https://as.com/meristation/imagenes/2019/03/19/noticias/1553025770_364735_1553025920_sumario_normal2.jpg",
+      "genero":"http://localhost:8080/genero/2"}""".trimIndent()
+    val body = json.toRequestBody(JSON)
+    val request = Request.Builder()
+        .url("http://localhost:8080/pelicula")
+        .header("Authorization", Credentials.basic("adm", "adm"))
+        .post(body).build()
+    val response = client.newCall(request).execute()
+
+    assertThat(response.code).isEqualTo(201)
+    response.close()
+  }
 ```
 *Respuesta*:   
 Código HTTP: **201** Created   
 Body (Objeto creado):  
 
-```
+```json
 {
-  "nombre" : "Carlos3000",
-  "telefono" : "092651651",
-  "email" : "carlos2@test.com",
-  "direccion" : "Mi Casa",
-  "_links" : {
-    "self" : {
-      "href" : "http://localhost:8080/estudiante/2"
-    },
-    "estudiante" : {
-      "href" : "http://localhost:8080/estudiante/2"
-    },
-    "departamento" : {
-      "href" : "http://localhost:8080/estudiante/2/departamento"
+  "titulo" : "Test 123",
+  "director" : "Carlos3000",
+  "fechaEstreno" : "2019-10-25",
+  "poster" : "https://as.com/meristation/imagenes/2019/03/19/noticias/1553025770_364735_1553025920_sumario_normal2.jpg",
+  "_embedded" : {
+    "genero" : {
+      "nombre" : "Aventura"
     }
-  }
-}
-```
-
-### PATCH (Update de campo puntual)
-*Ejemplo de petición con usuario profesor*:   
-
-```
-curl -X PATCH \
-  http://localhost:8080/estudiante/2 \
-  -H 'authorization: Basic cHJvZmVzb3I6cHJvZmVzb3I=' \
-  -H 'content-type: application/json' \
-  -d '{
-    "nombre": "Carlos2"
-}'
-```
-
-*Respuesta*:   
-Código HTTP: **200** OK     
-Body (Objeto actualizado):   
-  
-```
-{
-  "nombre" : "Carlos2",
-  "telefono" : "092651651",
-  "email" : "carlos2@test.com",
-  "direccion" : "Mi Casa",
+  },
   "_links" : {
     "self" : {
-      "href" : "http://localhost:8080/estudiante/2"
+      "href" : "http://localhost:8080/pelicula/4"
     },
-    "estudiante" : {
-      "href" : "http://localhost:8080/estudiante/2"
+    "pelicula" : {
+      "href" : "http://localhost:8080/pelicula/4"
     },
-    "departamento" : {
-      "href" : "http://localhost:8080/estudiante/2/departamento"
+    "genero" : {
+      "href" : "http://localhost:8080/pelicula/4/genero"
     }
   }
 }
 ```
 
 ### PUT (Update de todo un registro)
-*Ejemplo de petición con usuario profesor*:   
+*Ejemplo de petición con rol ROLE_ADMIN*:   
 
-```
-curl -X PUT \
-  http://localhost:8080/estudiante/1 \
-  -H 'authorization: Basic cHJvZmVzb3I6cHJvZmVzb3I=' \
-  -H 'content-type: application/json' \
-  -d '{
-    "nombre": "Carlos3000",
-    "telefono": "092651651",
-    "email": "carlos2@test.com",
-    "direccion": "Mi Casa",
-    "departamento":"http://localhost:8080/departamento/3"
-}'
+```kotlin
+  @Test
+  @Throws(IOException::class)
+  fun givenAdmin_whenPutPelicula_thenGetResponse204() {
+    val client = OkHttpClient()
+    val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
+    val json = """
+      {"director": "null",
+      "titulo": "Test 123",
+      "fechaEstreno": "2019-12-10",
+      "poster": "https://as.com/meristation/imagenes/2019/03/19/noticias/1553025770_364735_1553025920_sumario_normal2.jpg",
+      "genero":"http://localhost:8080/genero/2"}""".trimIndent()
+    val body = json.toRequestBody(JSON)
+    val request = Request.Builder()
+        .url("http://localhost:8080/pelicula/1")
+        .header("Authorization", Credentials.basic("adm", "adm"))
+        .put(body).build()
+    val response = client.newCall(request).execute()
+
+    assertThat(response.code).isEqualTo(204)
+    response.close()
+  }
 ```
 
 *Respuesta*:   
 Código HTTP: **200** OK     
 Body (Objeto actualizado):   
 
-```
+```json
 {
-  "nombre" : "Carlos3000",
-  "telefono" : "092651651",
-  "email" : "carlos2@test.com",
-  "direccion" : "Mi Casa",
+  "titulo" : "Test 123",
+  "director" : "null",
+  "fechaEstreno" : "2019-12-10",
+  "poster" : "https://as.com/meristation/imagenes/2019/03/19/noticias/1553025770_364735_1553025920_sumario_normal2.jpg",
+  "_embedded" : {
+    "genero" : {
+      "nombre" : "Sci-Fi"
+    }
+  },
   "_links" : {
     "self" : {
-      "href" : "http://localhost:8080/estudiante/1"
+      "href" : "http://localhost:8080/pelicula/1"
     },
-    "estudiante" : {
-      "href" : "http://localhost:8080/estudiante/1"
+    "pelicula" : {
+      "href" : "http://localhost:8080/pelicula/1"
     },
-    "departamento" : {
-      "href" : "http://localhost:8080/estudiante/1/departamento"
+    "genero" : {
+      "href" : "http://localhost:8080/pelicula/1/genero"
     }
   }
 }
 ```
 
 ### DELETE (Borrado de registro)
-*Ejemplo de petición con usuario profesor*:   
+*Ejemplo de petición con usuario ROLE_ADMIN*:   
 
-```
-curl -X DELETE \
-  http://localhost:8080/estudiante/1 \
-  -H 'authorization: Basic cHJvZmVzb3I6cHJvZmVzb3I=' 
+```kotlin
+  @Test
+  @Throws(IOException::class)
+  fun givenAdmin_whenDeletePelicula_thenGetResponse204() {
+    val client = OkHttpClient()
+    val request = Request.Builder()
+        .url("http://localhost:8080/pelicula/1")
+        .header("Authorization", Credentials.basic("adm", "adm"))
+        .delete().build()
+
+    val response = client.newCall(request).execute()
+
+    assertThat(response.code).isEqualTo(204)
+    response.close()
+  }
 ```
 
 *Respuesta*:   
@@ -225,8 +236,8 @@ Una vez ejecutada la aplicación podra consultar las siguientes utilidades embeb
 1. **HAL Browser**: Permite explorar los endpoint del servidor a través de navegación.  
 *URL Acceso*: [http://localhost:8080/browser/index.html#/](http://localhost:8080/browser/index.html#/)
 Para acceder a los endpoints protegidos con HTTP Basic deberá agregar en los "Custom Request Headers" el valor:   
-Authorization: Basic cHJvZmVzb3I6cHJvZmVzb3I=    
-Donde "cHJvZmVzb3I6cHJvZmVzb3I=" es el Base64 de profesor:profesor.        
+Authorization: Basic YWRtaW46YWRtaW4=    
+Donde "YWRtaW46YWRtaW4="" es el Base64 de admin:admin.        
 ![](HalBrowser.png)  
 Figura 1. Captura de Hal Browser
    
@@ -234,19 +245,10 @@ Figura 1. Captura de Hal Browser
 *URL Acceso*: [http://localhost:8080/h2-console/](http://localhost:8080/h2-console/)   
 **Parámetros de conexión:**   
 *Driver*: org.h2.Driver   
-*JDBC URL*: jdbc:h2:mem:classdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE   
+*JDBC URL*: jdbc:h2:mem:classdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE  
 *User Name*: sa   
 *Password*:   
-![](H2ConsoleLogin.png)   
-Figura 2. Login H2 Console   
-![](H2ConsoleManager.png)   
-Figura 3. Manager H2 Console   
-
-
-## Código fuente
-https://github.com/earth001/Ejercicios-spring-boot/tree/master/class-server
-
-## Compilación
-Para generar el artefacto de la aplicación a partir del código fuente se requiere ejecutar el siguiente comando en la raíz:   
-`$ mvn clean install`   
-Requiere Java 8.
+![](H2ConsoleLogin.png)
+Figura 2. Login H2 Console
+![](H2ConsoleManager.png)
+Figura 3. Manager H2 Console
