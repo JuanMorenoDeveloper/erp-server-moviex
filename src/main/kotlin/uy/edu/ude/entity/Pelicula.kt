@@ -71,7 +71,7 @@ class Pelicula {
         ", director='" + director + '\''.toString() +
         ", fechaEstreno='" + fechaEstreno + '\''.toString() +
         ", genero='" + genero + '\''.toString() +
-        ",poster='" + poster + '\''.toString() +
+        ", poster='" + poster + '\''.toString() +
         '}'.toString()
   }
 }

@@ -39,7 +39,7 @@ Con rol "**ROLE_ADMIN**":
 El acceso a los recursos está protegido por autenticación HTTP Basic. Las URL y métodos permitidos por rol se describen a continuación:
 
 *URL*: /pelicula/**   
-*Métodos HTTP permitidos*: POST(ROLE_ADMIN), DELETE(ROLE_ADMIN), PUT(ROLE_ADMIN), GET(ROLE_ADMIN, ROLE_USER)
+*Métodos HTTP permitidos*: POST(ROLE_ADMIN), DELETE(ROLE_ADMIN), PUT(ROLE_ADMIN), PATCH(ROLE_ADMIN), GET(ROLE_ADMIN, ROLE_USER)
 
 *URL*: /genero/**   
 *Métodos HTTP permitidos*: GET(ROLE_ADMIN, ROLE_USER)
@@ -146,7 +146,7 @@ Body (Objeto creado):
 }
 ```
 
-### PUT (Update de todo un registro)
+### PATCH (Update de todo un registro)
 *Ejemplo de petición con rol ROLE_ADMIN*:   
 
 ```kotlin
@@ -165,7 +165,7 @@ Body (Objeto creado):
     val request = Request.Builder()
         .url("http://localhost:8080/pelicula/1")
         .header("Authorization", Credentials.basic("adm", "adm"))
-        .put(body).build()
+        .patch(body).build()
     val response = client.newCall(request).execute()
 
     assertThat(response.code).isEqualTo(204)

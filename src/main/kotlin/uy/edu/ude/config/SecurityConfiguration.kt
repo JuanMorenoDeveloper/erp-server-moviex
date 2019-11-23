@@ -47,6 +47,8 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
         .hasRole(ROLE_ADMIN)
         .antMatchers(PUT, "/pelicula/**")
         .hasRole(ROLE_ADMIN)
+        .antMatchers(PATCH, "/pelicula/**")
+        .hasRole(ROLE_ADMIN)
         .antMatchers(DELETE, "/pelicula/**")
         .hasRole(ROLE_ADMIN)
         .antMatchers(GET, "/pelicula/**")

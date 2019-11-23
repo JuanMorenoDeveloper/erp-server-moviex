@@ -173,7 +173,7 @@ class OkHttpIntegrationTest {
     val request = Request.Builder()
         .url("http://localhost:8080/pelicula/1")
         .header("Authorization", Credentials.basic("adm", "adm"))
-        .put(body).build()
+        .patch(body).build()
     val response = client.newCall(request).execute()
 
     assertThat(response.code).isEqualTo(204)
